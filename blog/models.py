@@ -5,6 +5,7 @@ from pathlib import Path
 from io import BytesIO
 from django.core.files import File
 from django.utils.html import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 def validate_positive(value):
     if value < 0:
@@ -42,13 +43,17 @@ def image_process(image):
 
 class BlogPost(models.Model):
     title = models.CharField(max_length=255, verbose_name = 'Тема')
-    info = models.TextField(verbose_name = 'Инфо', blank=True)
+    info = models.TextField(verbose_name ='Инфо', blank=True)
     price = models.IntegerField(blank=True, null=True, validators=[validate_positive], verbose_name='Цена')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name = 'Добавлен')
     updated_at = models.DateTimeField(auto_now=True, verbose_name = 'Исправлен')
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = _("Пост")
+        verbose_name_plural = _("Посты")
 
 
 class BlogImage(models.Model):
@@ -67,3 +72,7 @@ class BlogImage(models.Model):
         return mark_safe(f'<img src="{self.image.url}" width="100" />')
 
     image_tag.short_description = 'Preview'
+
+    class Meta:
+        verbose_name = _("Фото")
+        verbose_name_plural = _("Фото")
