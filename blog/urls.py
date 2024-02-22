@@ -6,9 +6,9 @@ app_name = 'blog'
 
 router = DefaultRouter()
 router.register(r'posts', BlogPostViewSet, basename='blogpost')
+router.register(r'datalab_profile', ProfileViewSet)
+router.register(r'datalab_team', TeamViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    # path('search-kg/', search_by_kyrgyz_word, name='search_by_kyrgyz_word'),
-    # path('search-ru/', search_by_russian_word, name='search_by_russian_word'),
 ]

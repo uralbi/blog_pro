@@ -6,6 +6,7 @@ from io import BytesIO
 from django.core.files import File
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
 
 def validate_positive(value):
     if value < 0:
@@ -41,7 +42,46 @@ def image_process(image):
         image.save(new_img_filename, File(buffer), save=False)
 
 
+class Profile(models.Model):
+    author = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name=_("Автор"))
+    company = models.CharField(max_length=255, default='Компания', verbose_name=_("Бренд"))
+    address = models.CharField(max_length=255, verbose_name=_("Адрес"))
+    phone = models.CharField(max_length=20, verbose_name=_("Телефон"))
+    whatsapp_number = models.CharField(max_length=20, verbose_name=_("Вотсап"))
+    email = models.EmailField(verbose_name=_("Email"))
+    instagram_url = models.URLField(verbose_name=_("Инстаграм"), blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name = 'Создан')
+
+    class Meta:
+        verbose_name = _("Профайл")
+        verbose_name_plural = _("Профайл")
+
+    def __str__(self):
+        return self.author.username
+
+
+class Team(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('Автор'))
+    name = models.CharField(max_length=255, verbose_name=_("Имя"))
+    position = models.CharField(max_length=255, verbose_name=_("Должность"))
+    image = models.ImageField(upload_to='blog_images/', verbose_name = 'Фото')
+    display = models.BooleanField(default=True, verbose_name = 'Показан')
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            image_process(self.image)
+        super().save(*args, **kwargs)
+
+    def image_tag(self):
+        return mark_safe(f'<img src="{self.image.url}" width="100" />')
+
+    class Meta:
+        verbose_name = _("Команда")
+        verbose_name_plural = _("Команда")
+
+
 class BlogPost(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('Автор'))
     title = models.CharField(max_length=255, verbose_name = 'Тема')
     info = models.TextField(verbose_name ='Инфо', blank=True)
     price = models.IntegerField(blank=True, null=True, validators=[validate_positive], verbose_name='Цена')
