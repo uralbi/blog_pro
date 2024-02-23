@@ -63,7 +63,7 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'https://vio.kg',
+    'https://datalab.vio.kg',
     'http://127.0.0.1',
 ]
 
