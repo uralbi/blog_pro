@@ -17,8 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+     "corsheaders",
     'django_cleanup.apps.CleanupConfig',
-    'corsheaders',
     'rest_framework',
     'blog',
 ]
@@ -60,8 +60,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     'https://vio.kg',
+    'http://127.0.0.1',
 ]
 
 WSGI_APPLICATION = 'blog_pro.wsgi.application'
@@ -79,6 +82,13 @@ AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
     { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 LANGUAGE_CODE = 'ru'
 TIME_ZONE = 'UTC'

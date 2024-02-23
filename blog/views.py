@@ -2,6 +2,8 @@ from rest_framework import viewsets, permissions
 from .models import BlogPost, Profile, Team
 from .srzs import BlogPostSerializer, ProfileSerializer, TeamSerializer
 from .pagination import StandardPagination
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 
 class BlogPostViewSet(viewsets.ModelViewSet):
@@ -14,6 +16,10 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             'images'
         ).order_by('-created_at')
 
+    @method_decorator(cache_page(60 * 25))  # Cache this view for 15 minutes
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
 
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
@@ -24,6 +30,10 @@ class ProfileViewSet(viewsets.ModelViewSet):
         queryset = Profile.objects.all()
         return queryset.filter(author__username='manager_datalab')
 
+    @method_decorator(cache_page(60 * 60 * 1))  # Cache this view for 2 hours
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
@@ -33,3 +43,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Team.objects.all()
         return queryset.filter(author__username='manager_datalab')
+
+    @method_decorator(cache_page(60 * 60 * 1))  # Cache this view for 1 hour
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
