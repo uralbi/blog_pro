@@ -41,8 +41,8 @@ class TeamViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        queryset = Team.objects.all()
-        return queryset.filter(author__username='manager_datalab')
+        queryset = Team.objects.filter(display=True, author__username='manager_datalab')
+        return queryset
 
     @method_decorator(cache_page(60 * 60 * 1))  # Cache this view for 1 hour
     def dispatch(self, *args, **kwargs):
