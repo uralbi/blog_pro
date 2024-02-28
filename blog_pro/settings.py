@@ -56,10 +56,18 @@ TEMPLATES = [
     },
 ]
 
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'blog.pagination.StandardPagination',
-    'PAGE_SIZE': 10,
-}
+    'PAGE_SIZE': 20,
+    "DEFAULT_THROTTLE_RATES": {
+        "anon_sustained": "500/day",
+        "anon_burst": "10/minute",
+        "user_sustained": "1000/day",
+        "user_burst": "50/minute",
+    },
+  }
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 
