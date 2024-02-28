@@ -16,7 +16,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             'images'
         ).order_by('-created_at')
 
-    @method_decorator(cache_page(60 * 25))  # Cache this view for 15 minutes
+    @method_decorator(cache_page(60 * 15))  # Cache this view for 15 minutes
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -30,7 +30,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
         queryset = Profile.objects.all()
         return queryset.filter(author__username='manager_datalab')
 
-    @method_decorator(cache_page(60 * 60 * 1))  # Cache this view for 2 hours
+    @method_decorator(cache_page(60 * 15))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -44,6 +44,6 @@ class TeamViewSet(viewsets.ModelViewSet):
         queryset = Team.objects.filter(display=True, author__username='manager_datalab')
         return queryset
 
-    @method_decorator(cache_page(60 * 60 * 1))  # Cache this view for 1 hour
+    @method_decorator(cache_page(60 * 15))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
