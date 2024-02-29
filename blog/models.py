@@ -13,12 +13,12 @@ def validate_positive(value):
         raise ValidationError("Price must be a positive number.")
 
 def image_process(image):
-    width, height = 900, 900
+    width, height = 600, 600
     img = Image.open(image)
     ch_width, ch_height = img.size
-    if ch_width <= 900 or ch_height <= 900:
+    if ch_width <= width or ch_height <= height:
         return
-    if img.width > width or img.height > height:
+    else:
         output_size = (width, height)
         img.thumbnail(output_size)
         img_filename = Path(image.file.name).stem  # file name without the extension
@@ -36,9 +36,9 @@ def image_process(image):
             img = img.crop((left, 0, right, cur_h))
 
         buffer = BytesIO()
-        img.save(buffer, format='PNG', optimize=True)
+        img.save(buffer, format='WEBP', optimize=True)
         buffer.seek(0)  # Move to the beginning of the BytesIO buffer before saving
-        new_img_filename = f"{img_filename}.png"
+        new_img_filename = f"{img_filename}.webp"
         image.save(new_img_filename, File(buffer), save=False)
 
 
