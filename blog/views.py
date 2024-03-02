@@ -13,6 +13,7 @@ class ExperienceListView(ListAPIView):
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
 
+    @method_decorator(cache_page(60 * 20))
     def get_queryset(self):
         """
         Optionally restricts the returned experiences to a given tag,
@@ -35,7 +36,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             'images'
         ).order_by('-created_at')
 
-    # @method_decorator(cache_page(60 * 30))  # Cache this view for 30 minutes
+    @method_decorator(cache_page(60 * 20))  # Cache this view for 30 minutes
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -49,7 +50,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
         queryset = Profile.objects.all()
         return queryset.filter(author__username='manager_datalab')
 
-    # @method_decorator(cache_page(60 * 60 * 12))
+    @method_decorator(cache_page(60 * 20))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -63,6 +64,6 @@ class TeamViewSet(viewsets.ModelViewSet):
         queryset = Team.objects.filter(display=True, author__username='manager_datalab')
         return queryset
 
-    # @method_decorator(cache_page(60 * 60))
+    @method_decorator(cache_page(60 * 20))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
