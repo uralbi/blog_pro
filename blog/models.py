@@ -87,6 +87,7 @@ class BlogPost(models.Model):
     price = models.IntegerField(blank=True, null=True, validators=[validate_positive], verbose_name='Цена')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name = 'Добавлен')
     updated_at = models.DateTimeField(auto_now=True, verbose_name = 'Исправлен')
+    tags = models.ManyToManyField('Tag', blank=True, related_name="posts", verbose_name='Теги')
 
     def __str__(self):
         return self.title
@@ -95,6 +96,33 @@ class BlogPost(models.Model):
         verbose_name = _("Пост")
         verbose_name_plural = _("Посты")
 
+
+class Experience(models.Model):
+    number = models.IntegerField(blank=True, null=True, validators=[validate_positive], verbose_name='Число')
+    title = models.CharField(max_length=255, verbose_name = 'Тема')
+    info = models.TextField(verbose_name ='Инфо', blank=True)
+    tags = models.ManyToManyField('Tag', blank=True, verbose_name='Теги')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _("Опыт")
+        verbose_name_plural = _("Опыт")
+
+
+class Tag(models.Model):
+  value = models.TextField(max_length=100, unique=True, verbose_name="Тег")
+
+  class Meta:
+    ordering = ['value']
+
+  def __str__(self):
+    return self.value
+
+  class Meta:
+        verbose_name = _("Тег")
+        verbose_name_plural = _("Теги")
 
 class BlogImage(models.Model):
     blog_post = models.ForeignKey(BlogPost, related_name='images', on_delete=models.CASCADE)

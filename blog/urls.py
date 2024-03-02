@@ -11,4 +11,5 @@ router.register(r'datalab_team', TeamViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('experiences/', ExperienceListView.as_view(), name='experience-list'),
 ]

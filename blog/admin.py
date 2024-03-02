@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from .models import BlogPost, BlogImage, Profile, Team
+from .models import BlogPost, BlogImage, Profile, Team, Tag, Experience
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.admin import AdminSite
@@ -35,6 +35,17 @@ class MyAdmin(AdminSite):
         return context
 
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('value',)
+
+class ExperAdmin(admin.ModelAdmin):
+    list_display = ('number', 'title', 'info', 'get_tags')
+
+    def get_tags(self, obj):
+        return ", ".join([tag.value for tag in obj.tags.all()])
+    get_tags.short_description = 'Tags'
+
+
 class BlogImageInline(admin.TabularInline):
     model = BlogImage
     readonly_fields = ('image_tag',)
@@ -42,7 +53,7 @@ class BlogImageInline(admin.TabularInline):
 
 
 class BlogPostAdmin(RestrictToUserMixin, admin.ModelAdmin):
-    list_display = ('author', 'title', 'display_info', 'price', 'created_at', 'updated_at')
+    list_display = ('author', 'title', 'display_info', 'get_tags', 'price', 'created_at', 'updated_at')
     inlines = [BlogImageInline]
     form = BlogPostAdminForm
 
@@ -50,9 +61,15 @@ class BlogPostAdmin(RestrictToUserMixin, admin.ModelAdmin):
         return obj.info[:100]
     display_info.short_description = 'Инфо'
 
+
+    def get_tags(self, obj):
+        return ", ".join([tag.value for tag in obj.tags.all()])
+    get_tags.short_description = 'Tags'
+
+
     def get_list_display(self, request):
         if request.user.groups.filter(name__icontains='datalab').exists():
-            return ('title', 'display_info', 'created_at',)
+            return ('title', 'display_info', 'get_tags', 'created_at',)
         return self.list_display
 
     def get_form(self, request, obj=None, **kwargs):
@@ -114,6 +131,8 @@ my_admin = MyAdmin(name='myadmin')
 my_admin.register(Team, TeamAdmin)
 my_admin.register(BlogPost, BlogPostAdmin)
 my_admin.register(BlogImage, BlogImageAdmin)
+my_admin.register(Experience, ExperAdmin)
+my_admin.register(Tag, TagAdmin)
 my_admin.register(User, UserAdmin)
 my_admin.register(Group, GroupAdmin)
 my_admin.register(Profile, ProfileAdmin)

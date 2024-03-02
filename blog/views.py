@@ -1,9 +1,28 @@
 from rest_framework import viewsets, permissions
-from .models import BlogPost, Profile, Team
+from rest_framework.generics import ListAPIView
+from .models import BlogPost, Profile, Team, Experience
 from .srzs import BlogPostSerializer, ProfileSerializer, TeamSerializer
 from .pagination import StandardPagination
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from .srzs import ExperienceSerializer, ProfileSerializer
+from rest_framework import generics
+
+
+class ExperienceListView(ListAPIView):
+    queryset = Experience.objects.all()
+    serializer_class = ExperienceSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned experiences to a given tag,
+        by filtering against a `tag` query parameter in the URL.
+        """
+        queryset = self.queryset
+        tag = self.request.query_params.get('tag', None)
+        if tag is not None:
+            queryset = queryset.filter(tags__value=tag)
+        return queryset
 
 
 class BlogPostViewSet(viewsets.ModelViewSet):
@@ -16,7 +35,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             'images'
         ).order_by('-created_at')
 
-    @method_decorator(cache_page(60 * 30))  # Cache this view for 30 minutes
+    # @method_decorator(cache_page(60 * 30))  # Cache this view for 30 minutes
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -30,7 +49,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
         queryset = Profile.objects.all()
         return queryset.filter(author__username='manager_datalab')
 
-    @method_decorator(cache_page(60 * 60 * 12))
+    # @method_decorator(cache_page(60 * 60 * 12))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -44,6 +63,6 @@ class TeamViewSet(viewsets.ModelViewSet):
         queryset = Team.objects.filter(display=True, author__username='manager_datalab')
         return queryset
 
-    @method_decorator(cache_page(60 * 60))
+    # @method_decorator(cache_page(60 * 60))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
