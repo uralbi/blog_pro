@@ -14,11 +14,10 @@ class ExperienceListView(ListAPIView):
     serializer_class = ExperienceSerializer
 
     @method_decorator(cache_page(60 * 20))
+    def get(self, *args, **kwargs):
+        return super().get(*args, **kwargs)
+
     def get_queryset(self):
-        """
-        Optionally restricts the returned experiences to a given tag,
-        by filtering against a `tag` query parameter in the URL.
-        """
         queryset = self.queryset
         tag = self.request.query_params.get('tag', None)
         if tag is not None:
