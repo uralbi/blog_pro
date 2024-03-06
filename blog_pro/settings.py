@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['blog.data.net.kg', '127.0.0.1']
+ALLOWED_HOSTS = ['blog.data.net.kg','www.blog.data.net.kg', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -69,12 +69,12 @@ REST_FRAMEWORK = {
   }
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
 if DEBUG:
     CORS_ALLOWED_ORIGINS = [ 'http://127.0.0.1',]
 else:
-    CORS_ALLOWED_ORIGINS = [ 'https://datalab.kg' ]
+    CORS_ALLOWED_ORIGINS = [ 'https://datalab.kg',]
 
 WSGI_APPLICATION = 'blog_pro.wsgi.application'
 
