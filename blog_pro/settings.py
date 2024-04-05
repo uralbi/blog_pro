@@ -72,7 +72,7 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = False
 
 if DEBUG:
-    CORS_ALLOWED_ORIGINS = [ 'http://127.0.0.1',]
+    CORS_ALLOWED_ORIGINS = [ 'http://127.0.0.1:5502',]
 else:
     CORS_ALLOWED_ORIGINS = [ 'https://datalab.kg',]
 
